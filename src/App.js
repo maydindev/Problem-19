@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 // isOpen true olduğunda Modalı açalım
 export default function App() {
@@ -15,7 +15,8 @@ export default function App() {
   return (
     <>
       <button onClick={openModal}>Modalı aç</button>
-      <Modal>
+
+      <Modal isOpen={isOpen} onClose={closeModal}>
         <h1 className='pb-2 text-lg font-bold'>Modal açık</h1>
         <button onClick={closeModal}>Kapalı</button>
       </Modal>
@@ -23,7 +24,23 @@ export default function App() {
   )
 }
 
-function Modal({ children }) {
+function Modal({ isOpen, onClose,children }) {
+
+  const dialogRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      dialogRef.current?.showModal();
+    } else {
+      dialogRef.current?.close();
+    }
+  }, [isOpen]);
+
   // ref.showModal()
-  return <dialog className='border-2 border-black p-4'>{children}</dialog>
+  return (
+    <dialog ref={dialogRef} className='border-2 border-black p-4' onClose={onClose}>
+      {children}
+    </dialog>
+  );
+  
 }
